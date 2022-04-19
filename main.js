@@ -40,7 +40,7 @@ async function init() {
     getAccountResult.textContent = `${formatedBalance} eth`;
 
     // const haiAddress = "0x204C6fB8279588a1a8E49BE61C9B30E5648708FF";
-    const daiAddress = "0xaD6D458402F60fD3Bd25163575031ACDce07538D";
+    const daiAddress = "0x6eF303b5a32375D33BABa0CBff3B06c7573b06F2";
 
     // The ERC-20 Contract ABI, which is a common contract interface
     // for tokens (this is the Human-Readable ABI format)
@@ -72,9 +72,8 @@ async function init() {
 
     // 'DAI'
 
-    const daiBalance = ethers.utils.formatEther(
-      (await daiContract.balanceOf(accountAddress)).toBigInt()
-    );
+    const daiBalance =
+      (await daiContract.balanceOf(accountAddress)) / Math.pow(10, 8);
 
     console.log({ contactName, contractSymbol, daiBalance, contractDecimals });
     tokenBalance.textContent = `${daiBalance} ${contractSymbol}`;
@@ -96,7 +95,7 @@ async function init() {
 
       transactionMessage.innerHTML = `<p>From: ${from}</p> Sent <p>${ethers.utils.formatEther(
         amount
-      )} DAI</p>To: ${to}`;
+      )} ${contractSymbol}</p>To: ${to}`;
 
       // The event object contains the verbatim log data, the
       // EventFragment and functions to fetch the block,
@@ -153,7 +152,7 @@ async function init() {
       try {
         e.preventDefault();
         console.log(amountInput.value);
-        const dai = ethers.utils.parseUnits(amountInput.value, 18);
+        const dai = ethers.utils.parseUnits(amountInput.value, 8);
 
         console.log(dai);
         const tx = daiWithSigner.transfer(recieverAddressInput.value, dai);
