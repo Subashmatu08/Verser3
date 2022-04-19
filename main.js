@@ -1,6 +1,7 @@
 import "./style.css";
 
 import { ethers } from "./ethers.min.js";
+import { formatEther } from "ethers/lib/utils";
 
 const getAccountResult = document.querySelector("#getAccountsResult");
 const tokenName = document.querySelector("#tokenName");
@@ -83,9 +84,9 @@ async function init() {
     // Receive an event when ANY transfer occurs
     daiContract.on("Transfer", (from, to, amount, event) => {
       console.log(
-        `${from} sent ${ethers.utils.formatEther(
-          amount
-        )} ${contractSymbol} to ${to}`
+        `${from} sent ${
+          ethers.utils.formatEther(amount) * Math.pow(10, 8)
+        } ${contractSymbol} to ${to}`
       );
       // alert(`${from} sent ${ethers.utils.formatEther(amount)} to ${to}`);
       modal.showModal();
@@ -109,7 +110,9 @@ async function init() {
 
     daiContract.on(transactionFilter, (from, to, amount, event) => {
       // The to will always be "address"
-      console.log(`I got ${formatEther(amount)} from ${from}.`);
+      console.log(
+        `I got ${formatEther(amount) * Math.pow(10, 10)} from ${from}.`
+      );
     });
 
     const daiWithSigner = daiContract.connect(signer);
@@ -137,7 +140,8 @@ async function init() {
     sentTransactions.forEach((transaction) => {
       const [sender, reciever, hexAmount] = transaction.args;
 
-      const amountRecieved = ethers.utils.formatEther(hexAmount.toBigInt());
+      const amountRecieved =
+        ethers.utils.formatEther(hexAmount.toBigInt()) * Math.pow(10, 10);
 
       console.log({ sender, reciever, amountRecieved });
       transactionSender.textContent = sender;
